@@ -146,7 +146,7 @@
     document.body.style.overflow = "";
     if (lastFocused) lastFocused.focus();
   }
-  document.querySelectorAll(".gallery__item").forEach(function (btn) {
+  document.querySelectorAll(".gallery-card").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var img = btn.querySelector("img");
       openLightbox(btn.getAttribute("data-full"), img ? img.alt : "");
@@ -198,6 +198,29 @@
       gsap.to(".hero__media img", {
         yPercent: 12, ease: "none",
         scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true }
+      });
+    }
+
+    // Horizontal scroll-pinned gallery (desktop + motion only)
+    if (window.ScrollTrigger) {
+      var mm = gsap.matchMedia();
+      mm.add("(min-width: 821px)", function () {
+        var vp = document.getElementById("galleryViewport");
+        var track = document.getElementById("galleryTrack");
+        var bar = document.getElementById("galleryBar");
+        if (!vp || !track) return;
+        vp.classList.add("is-pinned");
+        var distance = function () { return Math.max(0, track.scrollWidth - vp.clientWidth); };
+        gsap.to(track, {
+          x: function () { return -distance(); },
+          ease: "none",
+          scrollTrigger: {
+            trigger: vp, start: "top top", end: function () { return "+=" + distance(); },
+            pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1,
+            onUpdate: function (self) { if (bar) bar.style.transform = "scaleX(" + self.progress.toFixed(4) + ")"; }
+          }
+        });
+        return function () { vp.classList.remove("is-pinned"); gsap.set(track, { clearProps: "transform" }); };
       });
     }
 

@@ -63,6 +63,13 @@ button { font-family: inherit; cursor: pointer; }
 .skip-link:focus { top: 12px; color:#fff; }
 :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 4px; }
 
+/* reading progress bar */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 1500;
+  background: linear-gradient(90deg, var(--amber), var(--amber-deep));
+  transform: scaleX(0); transform-origin: left; will-change: transform;
+}
+
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
@@ -212,8 +219,8 @@ button { font-family: inherit; cursor: pointer; }
 
 /* ---------- About ---------- */
 .about { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(30px, 5vw, 70px); align-items: center; }
-.about__media { position: relative; }
-.about__media img { border-radius: var(--radius-lg); box-shadow: var(--shadow); aspect-ratio: 4/5; object-fit: cover; width: 100%; }
+.about__media { position: relative; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
+.about__media img { aspect-ratio: 4/5; object-fit: cover; width: 100%; display: block; clip-path: inset(0 0 0 0); }
 .about__text h2 { font-size: clamp(1.9rem, 4vw, 2.7rem); margin-bottom: 1rem; }
 .about__text p { color: #4b3c2c; margin-bottom: 1rem; }
 .about__facts { list-style: none; padding: 0; display: flex; gap: 28px; margin-top: 1.6rem; flex-wrap: wrap; }

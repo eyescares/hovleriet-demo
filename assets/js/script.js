@@ -33,10 +33,16 @@
     demoClose.addEventListener("click", function () { banner.classList.add("is-hidden"); });
   }
 
-  /* ---------- Sticky header shadow ---------- */
+  /* ---------- Sticky header shadow + reading progress ---------- */
   var header = document.getElementById("siteHeader");
+  var progressBar = document.getElementById("scrollProgress");
   function onScroll() {
     if (header) header.classList.toggle("is-scrolled", window.scrollY > 8);
+    if (progressBar) {
+      var doc = document.documentElement;
+      var max = doc.scrollHeight - doc.clientHeight;
+      progressBar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, window.scrollY / max) : 0) + ")";
+    }
   }
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
@@ -213,10 +219,10 @@
         var distance = function () { return Math.max(0, track.scrollWidth - vp.clientWidth); };
         gsap.to(track, {
           x: function () { return -distance(); },
-          ease: "none",
+          ease: "power2.inOut",            // smooth ease-in entering, ease-out leaving
           scrollTrigger: {
-            trigger: vp, start: "top top", end: function () { return "+=" + distance(); },
-            pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1,
+            trigger: vp, start: "top top", end: function () { return "+=" + (distance() + window.innerHeight * 0.5); },
+            pin: true, scrub: 1.6, invalidateOnRefresh: true, anticipatePin: 1,
             onUpdate: function (self) { if (bar) bar.style.transform = "scaleX(" + self.progress.toFixed(4) + ")"; }
           }
         });
@@ -224,16 +230,46 @@
       });
     }
 
-    // Section reveals
+    // Section reveals — smooth fade/rise
     var others = gsap.utils.toArray("[data-reveal]").filter(function (el) {
       return !el.closest(".hero");
     });
     others.forEach(function (el) {
       gsap.from(el, {
-        y: 30, opacity: 0, duration: 0.7, ease: "power2.out",
-        scrollTrigger: { trigger: el, start: "top 88%", once: true }
+        y: 42, opacity: 0, duration: 0.9, ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 86%", once: true }
       });
     });
+
+    // "Om oss" image — smooth clip-path reveal + scale settle
+    var aboutImg = document.querySelector(".about__media img");
+    if (aboutImg) {
+      gsap.from(aboutImg, {
+        clipPath: "inset(0% 0% 100% 0%)", scale: 1.12, duration: 1.15, ease: "power3.out",
+        scrollTrigger: { trigger: ".about__media", start: "top 82%", once: true }
+      });
+    }
+
+    // Animated number counters
+    if (window.ScrollTrigger) {
+      gsap.utils.toArray("[data-count]").forEach(function (el) {
+        var target = parseFloat(el.getAttribute("data-count"));
+        var dec = parseInt(el.getAttribute("data-decimals") || "0", 10);
+        var suffix = el.getAttribute("data-suffix") || "";
+        var obj = { v: 0 };
+        window.ScrollTrigger.create({
+          trigger: el, start: "top 92%", once: true,
+          onEnter: function () {
+            gsap.to(obj, {
+              v: target, duration: 1.6, ease: "power2.out",
+              onUpdate: function () {
+                el.textContent = (dec ? obj.v.toFixed(dec).replace(".", ",") : Math.round(obj.v)) + suffix;
+              }
+            });
+          }
+        });
+      });
+    }
   }
   // Run after deferred GSAP scripts have executed
   if (document.readyState === "complete") initAnim();

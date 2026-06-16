@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Høvleriet">
+  <rect width="48" height="48" rx="12" fill="#3D2A1A"/>
+  <!-- timber grain lines -->
+  <path d="M9 16h30M9 32h30" stroke="#5C3A21" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <!-- monogram H carved in wood -->
+  <g fill="#D98A3D">
+    <rect x="14" y="13" width="5.5" height="22" rx="2"/>
+    <rect x="28.5" y="13" width="5.5" height="22" rx="2"/>
+    <rect x="14" y="21.25" width="20" height="5.5" rx="2"/>
+  </g>
+  <!-- wood shaving curl accent -->
+  <path d="M33 12c4 0 5 3 2.5 4.8C33.6 18.2 32 17 33 15.4" fill="none" stroke="#E9C9A0" stroke-width="1.8" stroke-linecap="round"/>
+</svg>
